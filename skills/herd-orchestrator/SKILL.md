@@ -43,6 +43,7 @@ never lets a worker commit to the base branch, push, or merge.
    # 1) herdr's own registry for this pane (authoritative if it exposes `kind`)
    herdr agent list   # find the entry whose pane == $HERDR_PANE_ID
    # 2) env markers (heuristic, verify per CLI version)
+   [ -n "${KILO_SESSION:-}${KILO_CLI:-}" ] || [ -f ~/.config/kilo/kilo.jsonc ] || [ -f ~/.config/kilo/kilo.json ] && echo kilo
    [ -n "${CLAUDECODE:-}${CLAUDE_CODE_ENTRYPOINT:-}" ] && echo claude
    [ -n "${GEMINI_CLI:-}" ] && echo gemini
    env | grep -q '^CODEX_' && echo codex
@@ -94,6 +95,8 @@ never lets a worker commit to the base branch, push, or merge.
    herdr pane split --current --direction <right|down> --cwd "$WT" --no-focus
    # read the new pane id from .result.pane.pane_id
    herdr agent start <name> --kind <kind> [--model <m> if supported (verify)] --pane <new-pane-id>
+   # Pick model from table based on detected kind and task tier
+   herdr agent start <name> --kind <kind> --model <model-from-table> --pane <new-pane-id>
    ```
 
    Explore/review-only workers may keep `--cwd "$PWD"` instead of a worktree
@@ -190,12 +193,13 @@ the Task board.
 
 Editable mapping (adjust to what is installed and licensed; example names only):
 
-| Coordinator kind | S                         | M            | H                    |
-| ---------------- | ------------------------- | ------------ | -------------------- |
-| claude           | haiku-class               | sonnet-class | opus-class           |
-| codex            | mini / low effort         | default      | high effort          |
-| gemini           | flash-class               | pro          | pro                  |
-| opencode         | cheap configured provider | default      | strongest configured |
+| Coordinator kind | S                         | M                         | H                    |
+| ---------------- | ------------------------- | ------------------------- | -------------------- |
+| claude           | haiku-class               | sonnet-class              | opus-class           |
+| kilo             | litellm/claude-haiku-4.5  | litellm/claude-sonnet-5.5 | litellm/gpt-6.1-sol  |
+| codex            | mini / low effort         | default                   | high effort          |
+| gemini           | flash-class               | pro                       | pro                  |
+| opencode         | cheap configured provider | default                   | strongest configured |
 
 Rules:
 
