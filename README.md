@@ -34,4 +34,7 @@ cp -r ~/herdr-config/skills/. ~/.config/opencode/skills/
 
 For Claude, use `~/.claude/skills/` instead.
 
+Note: the `herd-orchestrator` skill needs git >= 2.5 (worktrees) and creates a
+git-excluded `.herd/` directory per repo.
+
 Restart Herdr / your agent so the new config and skills are picked up.
